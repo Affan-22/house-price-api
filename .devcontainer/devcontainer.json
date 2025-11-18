@@ -1,33 +1,87 @@
-{
-  "name": "Python 3",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
-  "customizations": {
-    "codespaces": {
-      "openFiles": [
-        "README.md",
-        "app.py"
-      ]
-    },
-    "vscode": {
-      "settings": {},
-      "extensions": [
-        "ms-python.python",
-        "ms-python.vscode-pylance"
-      ]
-    }
-  },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
-  "postAttachCommand": {
-    "server": "streamlit run app.py --server.enableCORS false --server.enableXsrfProtection false"
-  },
-  "portsAttributes": {
-    "8501": {
-      "label": "Application",
-      "onAutoForward": "openPreview"
-    }
-  },
-  "forwardPorts": [
-    8501
-  ]
-}
+import streamlit as st
+import torch
+import torch.nn as nn
+
+# ---------------------------------------------------
+# PyTorch Model
+# ---------------------------------------------------
+class HouseModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(2, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1)
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+@st.cache_resource
+def load_model():
+    model = HouseModel()
+    model.load_state_dict(torch.load("house_model.pt", map_location="cpu"))
+    model.eval()
+    return model
+
+model = load_model()
+
+# ---------------------------------------------------
+# Page Config
+# ---------------------------------------------------
+st.set_page_config(page_title="House Value Estimator", layout="wide")
+
+# ---------------------------------------------------
+# Sidebar Inputs (New UI)
+# ---------------------------------------------------
+st.sidebar.header("📌 Property Details")
+
+sqft = st.sidebar.slider("Total Area (sqft)", 400, 6000, 1200)
+bhk = st.sidebar.selectbox("Number of Bedrooms (BHK)", [1, 2, 3, 4, 5])
+location = st.sidebar.selectbox("Location", ["Bangalore", "Hyderabad", "Chennai", "Mumbai", "Pune"])
+age = st.sidebar.number_input("Age of House (Years)", 0, 30, 5)
+furnished = st.sidebar.radio("Furnishing Status", ["Furnished", "Semi-Furnished", "Unfurnished"])
+balcony = st.sidebar.selectbox("Balconies", [0, 1, 2, 3])
+parking = st.sidebar.selectbox("Parking Available", ["Yes", "No"])
+
+st.sidebar.write("---")
+predict_btn = st.sidebar.button("🔍 Estimate Price")
+
+
+# ---------------------------------------------------
+# Main Layout - New Modern Look
+# ---------------------------------------------------
+st.title("🏠 House Value Estimator")
+st.write("A modern app to estimate house prices using a PyTorch ML model.")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("📄 Submitted Details")
+    st.write(f"**Location:** {location}")
+    st.write(f"**Area:** {sqft} sqft")
+    st.write(f"**BHK:** {bhk}")
+    st.write(f"**Age:** {age} years")
+    st.write(f"**Furnishing:** {furnished}")
+    st.write(f"**Balconies:** {balcony}")
+    st.write(f"**Parking:** {parking}")
+
+with col2:
+    st.subheader("💰 Estimated Price")
+    if predict_btn:
+        x = torch.tensor([[sqft, bhk]], dtype=torch.float32)
+        predicted_value = model(x).item()
+        final_price = predicted_value * 5000
+
+        st.success(f"### ₹ {final_price:,.2f}")
+    else:
+        st.info("Click **Estimate Price** to see the prediction.")
+
+
+# ---------------------------------------------------
+# Footer
+# ---------------------------------------------------
+st.write("---")
+st.caption("✨ Designed with Streamlit | ML Model: PyTorch")
