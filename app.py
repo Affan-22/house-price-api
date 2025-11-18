@@ -2,9 +2,9 @@ import streamlit as st
 import torch
 import torch.nn as nn
 
-# -----------------------------
-# PyTorch Model Definition
-# -----------------------------
+# ---------------------------------------------------
+# PyTorch Model
+# ---------------------------------------------------
 class HouseModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -15,13 +15,10 @@ class HouseModel(nn.Module):
             nn.ReLU(),
             nn.Linear(8, 1)
         )
-        
+
     def forward(self, x):
         return self.net(x)
 
-# -----------------------------
-# Load Model
-# -----------------------------
 @st.cache_resource
 def load_model():
     model = HouseModel()
@@ -31,35 +28,60 @@ def load_model():
 
 model = load_model()
 
-# -----------------------------
-# Streamlit UI
-# -----------------------------
-st.title("🏡 House Price Prediction App (PyTorch Model)")
-st.write("Enter house details to get the predicted price.")
+# ---------------------------------------------------
+# Page Config
+# ---------------------------------------------------
+st.set_page_config(page_title="House Value Estimator", layout="wide")
 
-# Input fields
-sqft = st.number_input("Enter Square Feet:", min_value=500, max_value=5000, value=1000)
-bhk = st.number_input("Enter BHK:", min_value=1, max_value=10, value=2)
+# ---------------------------------------------------
+# Sidebar Inputs (New UI)
+# ---------------------------------------------------
+st.sidebar.header("📌 Property Details")
 
-# -----------------------------
-# Prediction
-# -----------------------------
-if st.button("Predict Price"):
-    x = torch.tensor([[sqft, bhk]], dtype=torch.float32)
-    prediction = model(x).item()
+sqft = st.sidebar.slider("Total Area (sqft)", 400, 6000, 1200)
+bhk = st.sidebar.selectbox("Number of Bedrooms (BHK)", [1, 2, 3, 4, 5])
+location = st.sidebar.selectbox("Location", ["Bangalore", "Hyderabad", "Chennai", "Mumbai", "Pune"])
+age = st.sidebar.number_input("Age of House (Years)", 0, 30, 5)
+furnished = st.sidebar.radio("Furnishing Status", ["Furnished", "Semi-Furnished", "Unfurnished"])
+balcony = st.sidebar.selectbox("Balconies", [0, 1, 2, 3])
+parking = st.sidebar.selectbox("Parking Available", ["Yes", "No"])
 
-    st.success(f"Predicted Price: ₹ {prediction*5000:,.3f}")
+st.sidebar.write("---")
+predict_btn = st.sidebar.button("🔍 Estimate Price")
 
 
+# ---------------------------------------------------
+# Main Layout - New Modern Look
+# ---------------------------------------------------
+st.title("🏠 House Value Estimator")
+st.write("A modern app to estimate house prices using a PyTorch ML model.")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("📄 Submitted Details")
+    st.write(f"**Location:** {location}")
+    st.write(f"**Area:** {sqft} sqft")
+    st.write(f"**BHK:** {bhk}")
+    st.write(f"**Age:** {age} years")
+    st.write(f"**Furnishing:** {furnished}")
+    st.write(f"**Balconies:** {balcony}")
+    st.write(f"**Parking:** {parking}")
+
+with col2:
+    st.subheader("💰 Estimated Price")
+    if predict_btn:
+        x = torch.tensor([[sqft, bhk]], dtype=torch.float32)
+        predicted_value = model(x).item()
+        final_price = predicted_value * 5000
+
+        st.success(f"### ₹ {final_price:,.2f}")
+    else:
+        st.info("Click **Estimate Price** to see the prediction.")
+
+
+# ---------------------------------------------------
 # Footer
+# ---------------------------------------------------
 st.write("---")
-st.write("Developed with ❤️ using Streamlit + PyTorch")
-
-
-
-
-
-
-
-
-
+st.caption("✨ Designed with Streamlit | ML Model: PyTorch")
