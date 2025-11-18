@@ -53,7 +53,7 @@ predict_btn = st.sidebar.button("🔍 Estimate Price")
 # ---------------------------------------------------
 # Main Layout - New Modern Look
 # ---------------------------------------------------
-st.title("🏠 House Value Estimator")
+st.title("🏠 House Price Prediction")
 st.write("A modern app to estimate house prices using a PyTorch ML model.")
 
 col1, col2 = st.columns(2)
@@ -85,3 +85,4 @@ with col2:
 # ---------------------------------------------------
 st.write("---")
 st.caption("✨ Designed with Streamlit | ML Model: PyTorch")
+
