@@ -48,13 +48,14 @@ if st.button("Predict Price"):
     x = torch.tensor([[sqft, bhk]], dtype=torch.float32)
     prediction = model(x).item()
 
-    st.success(f"Predicted Price: ₹ {prediction^2:,.3f}")
+    st.success(f"Predicted Price: ₹ {prediction*10:,.3f}")
 
     st.caption("⚠️ Note: This is an untrained model — predictions are random unless trained.")
 
 # Footer
 st.write("---")
 st.write("Developed with ❤️ using Streamlit + PyTorch")
+
 
 
 
