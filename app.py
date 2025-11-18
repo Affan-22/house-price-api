@@ -1,4 +1,4 @@
-    import streamlit as st
+import streamlit as st
 import torch
 import torch.nn as nn
 
@@ -55,6 +55,7 @@ if st.button("Predict Price"):
 # Footer
 st.write("---")
 st.write("Developed with ❤️ using Streamlit + PyTorch")
+
 
 
 
