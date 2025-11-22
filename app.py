@@ -66,7 +66,7 @@ body {
 # ---------------------------------------------------
 # HEADER
 # ---------------------------------------------------
-st.markdown("<div class='header-box'><h1> Smart Home Price Valuator</h1><p>AI-powered real estate price predictor</p></div>", unsafe_allow_html=True)
+st.markdown("<div class='header-box'><h1> House price prediction </h1><p>AI-powered real estate price predictor</p></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------
 # LAYOUT
@@ -109,5 +109,6 @@ with right:
 # FOOTER
 # ---------------------------------------------------
 st.write("---")
+
 
 
