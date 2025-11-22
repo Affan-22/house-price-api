@@ -31,7 +31,7 @@ model = load_model()
 # ---------------------------------------------------
 # PAGE CONFIG
 # ---------------------------------------------------
-st.set_page_config(page_title="Smart Home Valuator", layout="wide")
+st.set_page_config(page_title="House price prediction", layout="wide")
 
 # Custom CSS for New UI
 st.markdown("""
@@ -66,7 +66,7 @@ body {
 # ---------------------------------------------------
 # HEADER
 # ---------------------------------------------------
-st.markdown("<div class='header-box'><h1>🏡 Smart Home Price Valuator</h1><p>AI-powered real estate price predictor</p></div>", unsafe_allow_html=True)
+st.markdown("<div class='header-box'><h1> Smart Home Price Valuator</h1><p>AI-powered real estate price predictor</p></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------
 # LAYOUT
@@ -74,7 +74,7 @@ st.markdown("<div class='header-box'><h1>🏡 Smart Home Price Valuator</h1><p>A
 left, right = st.columns([1.2, 1])
 
 with left:
-    st.markdown("### 📌 Enter Property Information")
+    st.markdown("###  Enter Property Information")
     st.markdown("<div class='card'>", unsafe_allow_html=True)
 
     sqft = st.slider("Total Area (sqft)", 400, 6000, 1200)
@@ -86,12 +86,12 @@ with left:
     balcony = st.selectbox("Balconies", [0, 1, 2, 3])
     parking = st.selectbox("Parking", ["Yes", "No"])
 
-    submit = st.button("🔍 Predict Price", use_container_width=True)
+    submit = st.button("Predict Price", use_container_width=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
 with right:
-    st.markdown("### 💰 Estimated Value")
+    st.markdown("###  Estimated Value")
     st.markdown("<div class='price-box'>", unsafe_allow_html=True)
 
     if submit:
@@ -109,4 +109,5 @@ with right:
 # FOOTER
 # ---------------------------------------------------
 st.write("---")
-st.caption("🔧 Built with Streamlit • Powered by PyTorch • Designed for Real Estate Intelligence")
+
+
